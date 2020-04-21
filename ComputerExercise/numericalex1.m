@@ -4,7 +4,7 @@ clear all
 % SOLVE 1-D HEAT FLOW PROBLEM
 A=10; Q = 100; k=5; q = 15;   % given in the problem
 xStart = 2; xEnd = 8;         % where the object starts and ends
-nelm=20; nen=2; ndof= nelm+1;  % #elements, #endpoints/element, #degoffreed.
+nelm=2000; nen=2; ndof= nelm+1;  % #elements, #endpoints/element, #degoffreed.
 
 x = linspace(xStart, xEnd, ndof);  % divide the object
 L = (x(end)-x(1))/nelm;            % length of each element
@@ -28,6 +28,9 @@ end
 bc = [1 0];
 T = solveq(K,F,bc);
 
+plot(x,T)
+
+% ANSWERS:
 % 3 elements: T = [0 14 20 18]'
 % 20 elements: T = [0;2.61000000000000;5.04000000000000;7.29000000000001;
 % 9.36000000000001;11.2500000000000;12.9600000000000;14.4900000000000;
