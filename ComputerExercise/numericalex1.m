@@ -1,58 +1,29 @@
 close all
 clear all
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Preprocessor
-A=10; Q = 100;
-k=1;
-xStart = 2; xEnd = 8;
-nelm=3; nen=2;
-ndof=8;
+% SOLVE 1-D HEAT FLOW PROBLEM
+A=10; Q = 100; k=5; q = 15;   % given in the problem
+xStart = 2; xEnd = 8;         % where the object starts and ends
+nelm=3; nen=2; ndof= nelm+1;  % #elements, #endpoints/element, #degoffreed.
 
-Coord=[ -L 0  % coordinates for the nodes
--L/sqrt(2) L/sqrt(2)
-0 0
-L/sqrt(2) L/sqrt(2)];
+x = linspace(xStart, xEnd, ndof);  % divide the object
+L = (x(end)-x(1))/nelm;            % length of each element
 
-Edof=[1 1 2 5 6
-2 3 4 5 6
-3 5 6 7 8];
+Ke = A*k/L*[1 -1; -1 1];           % element stiffness matrix
 
+Edof = zeros(nelm, nen+1);
 
-
-
-Dof=[ 1 2
-3 4
-5 6
-7 8];  
-
-[Ex,Ey]=coordxtr(Edof,Coord,Dof,nen);
-
-K=zeros(ndof);
-F = zeros(ndof,1);
-
-F(5)=10;
-F(6)=1000000;
-
-bc=[1 0
-2 0
-3 0
-4 0
-7 0
-8 0];
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Solver
 for elnr=1:nelm
-Ke=bar2e(Ex(elnr,:),Ey(elnr,:),[E A]);
-K=assem(Edof(elnr,:),K,Ke);
+   Edof(elnr,:) = [elnr elnr elnr+1]; 
 end
 
-a=solveq(K,F, bc);
+K=zeros(ndof);
+F = zeros(ndof,1); F(xEnd) = -q*A;
+Fe = [Q*L/2 ; Q*L/2];
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Post processor
+for elnr = 1:nelm
+    [K, F] = assem(Edof(elnr, :), K, Ke, F, Fe);
+end
 
-ed=extract(Edof,a);
-es=bar2s(Ex,Ey,[E A],ed);
-
-eldraw2(Ex,Ey,[1 4 1])
-
-eldisp2(Ex,Ey,ed,[1 2 1])
+bc = [1 0];
+T = solveq(K,F,bc);
