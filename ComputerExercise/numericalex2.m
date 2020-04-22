@@ -80,22 +80,27 @@ bc=[bcarc;bc3;bc4];
 
 bc(11,:)=[]; % Remove 
 
-ep = 1;
-eq = 1;
-k = 1;
-D = k*eye(2);
-K = zeros(ndof);
-f = zeros(ndof,1);
 
-for i = 1:nelm
-   [Ke, fe] = flw2te(ex(i,:),ey(i,:),ep,D,eq);
-   [K, f] = assem(edof(i, :), K, Ke, f, fe);
+% MY CODE BELOW:
+k = 1;
+ep = 1;         % 
+eq = 1;         % 
+D = k*eye(2);   % 2D constitutive matrix
+K = zeros(ndof);
+f = zeros(ndof, 1);
+
+for elnr = 1:nelm
+   [Ke, fe] = flw2te(ex(elnr,:), ey(elnr,:), ep, D, eq);
+   [K, f] = assem(edof(elnr,:), K, Ke, f, fe);
 end
 
-bc=[bc3; bc4; bcarc];
-T = solveq(K,f,bc);
+a = solveq(K, f, bc);
+colormap(jet);
+ed = extract(edof, a);
 
-ed=extract(edof,T);
-colormap(hot);
-fill(ex',ey',ed');
-colorbar;
+patch(ex', ey', ed');
+colorbar
+
+
+
+
