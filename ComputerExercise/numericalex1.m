@@ -4,12 +4,10 @@ clear all
 % SOLVE 1-D HEAT FLOW PROBLEM
 A=10; Q = 100; k=5; q = 15;   % given in the problem
 xStart = 2; xEnd = 8;         % where the object starts and ends
-nelm=2000; nen=2; ndof= nelm+1;  % #elements, #endpoints/element, #degoffreed.
+nelm=500; nen=2; ndof= nelm+1;  % #elements, #endpoints/element, #degoffreed.
 
 x = linspace(xStart, xEnd, ndof);  % divide the object
 L = (x(end)-x(1))/nelm;            % length of each element
-
-Ke = A*k/L*[1 -1; -1 1];           % element stiffness matrix
 
 Edof = zeros(nelm, nen+1);
 
@@ -17,12 +15,20 @@ for elnr=1:nelm
    Edof(elnr,:) = [elnr elnr elnr+1]; 
 end
 
-K=zeros(ndof);
-F = zeros(ndof,1); F(end) = -q*A;
-Fe = [Q*L/2 ; Q*L/2];
+Ke = spring1e(A*k/L);                % element stiffness matrix
+K = zeros(ndof);                     % stiffness matrix
+Fb = zeros(ndof,1); Fb(end) = -q*A;  % boundary vector
+Fl = zeros(ndof, 1);                 % load vector
+
+for i=1:nelm
+    Fl(i) = Fl(i) + Q*L/2;
+    Fl(i+1) = Fl(i+1) + Q*L/2;
+end
+
+F = Fb + Fl;
 
 for elnr = 1:nelm
-    [K, F] = assem(Edof(elnr, :), K, Ke, F, Fe);
+    K = assem(Edof(elnr, :), K, Ke);
 end
 
 bc = [1 0];

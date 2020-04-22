@@ -1,6 +1,7 @@
 
 % SOLVE 2-D HEAT FLOW PROBLEM
-
+clear all
+clc
 clf
 
 % defined coordinates
@@ -78,3 +79,23 @@ bc=[bcarc;bc3;bc4];
 
 
 bc(11,:)=[]; % Remove 
+
+ep = 1;
+eq = 1;
+k = 1;
+D = k*eye(2);
+K = zeros(ndof);
+f = zeros(ndof,1);
+
+for i = 1:nelm
+   [Ke, fe] = flw2te(ex(i,:),ey(i,:),ep,D,eq);
+   [K, f] = assem(edof(i, :), K, Ke, f, fe);
+end
+
+bc=[bc3; bc4; bcarc];
+T = solveq(K,f,bc);
+
+ed=extract(edof,T);
+colormap(hot);
+fill(ex',ey',ed');
+colorbar;
