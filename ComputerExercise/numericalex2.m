@@ -83,8 +83,8 @@ bc(11,:)=[]; % Remove
 
 % MY CODE BELOW:
 k = 1;
-ep = 1;         % 
-eq = 1;         % 
+ep = 1;         % element thickness 
+eq = 0;         % Q - heat supply per unit volume
 D = k*eye(2);   % 2D constitutive matrix
 K = zeros(ndof);
 f = zeros(ndof, 1);
