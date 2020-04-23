@@ -9,7 +9,7 @@ function pdemodel
 [pde_fig,ax]=pdeinit;
 pdetool('appl_cb',1);
 set(ax,'DataAspectRatio',[4 5.25 1]);
-set(ax,'PlotBoxAspectRatio',[0.92736077481840218 1 0.92736077481840218]);
+set(ax,'PlotBoxAspectRatio',[1 1 1]);
 set(ax,'XLim',[-2 6]);
 set(ax,'YLim',[-0.5 10]);
 set(ax,'XTick',[ -2,...
@@ -190,6 +190,3 @@ setappdata(pde_fig,'colstring','');
 setappdata(pde_fig,'arrowstring','');
 setappdata(pde_fig,'deformstring','');
 setappdata(pde_fig,'heightstring','');
-
-% Solve PDE:
-pdetool('solve')
