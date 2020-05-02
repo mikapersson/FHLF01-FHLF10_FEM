@@ -11,7 +11,7 @@ t = mesh.t;  % triangles (4xnelm, rows 1-3: node numbers, 4: subdomain)
 
 % DONT FORGET TO CONVERT FROM mm TO m!!
 
-domain_k = [385; 149; 5; 385];  % k in every domain
+domain_k = [385; 149; 5; 385];  % k for each domain domain
 thickness = 10;                 % thickness of the IC
 initTemp = 30;                  % initial temperature
 envTemp = 18;                   % environment temperature
@@ -34,9 +34,10 @@ end
 [ex,ey]=coordxtr(edof,coord,dof,3);  % x- and y coordinates for each element
 
 % Check which segments that should have convections
-er = e([1 2 5],:); % Reduced e (only interested of rows 1, 2 and 5)
-conv_segments = [1 9 18]; % Choosen boundary segments
-edges_conv = [];
+er = e([1 2 5],:);        % reduced e (only interested of rows 1, 2 and 5)
+conv_segments = [1 9 18]; % choosen boundary segments
+edges_conv = [];          % edges with convection
+
 for i = 1:size(er,2)
     if ismember(er(3,i),conv_segments)
         edges_conv = [edges_conv er(1:2,i)];  % may use preallocation
@@ -44,9 +45,10 @@ for i = 1:size(er,2)
 end
 
 %% SOLVER
-D = eye(2);   % 2D constitutive matrix
-K = zeros(ndof);
-f = zeros(ndof, 1);
+ndof = 2*nnod;       % number degrees of freedom (x & y per node)
+D = eye(2);          % 2D constitutive element matrix
+K = zeros(ndof);     % stiffness matrix
+f = zeros(ndof, 1);  % force vector 
 
 for elnr = 1:nelm
     
