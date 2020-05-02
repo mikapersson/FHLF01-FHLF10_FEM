@@ -61,13 +61,17 @@ for elnr = 1:nelm
     indx = edof(elnr,2:end);              
     K(indx,indx) = K(indx,indx)+Ke; 
     
-    indx = edof(el,2:end);               
+    indx = edof(elnr,2:end);               
     f(indx) = f(indx) + fe;             
 end
 
+convection_nodes = unique(edges_conv);    % nodes that belong to the convection boundary
+nr_rows = size(convection_nodes, 1);
+init_temp = zeros(nr_rows, 1);
 
+bc = [convection_nodes, init_temp];
 
-%T = soleq...                 % nodal temperatures
+T = solveq(K, f, bc);  % nodal temperatures
 
 %% POST PROCESSOR
 eT=extract(edof,T);   % element temperatures
@@ -76,6 +80,13 @@ eT=extract(edof,T);   % element temperatures
 patch(ex',ey',eT');   %
 hold on     
 patch(-ex',ey',eT');  % 
+
+title('Temperature distribution [C]')
+colormap(hot);
+colorbar;
+xlabel('x-position [m]')
+ylabel('y-position [m]')
+axis equal
 
 %patch(ex’,ey’,eT’,’EdgeColor’,’none’)  % removes the mesh lines
 
