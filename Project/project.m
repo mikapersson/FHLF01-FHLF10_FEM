@@ -28,7 +28,7 @@ end
 
 % Check which segments that should have convections
 er = e([1 2 5],:); % Reduced e (only interested of rows 1, 2 and 5)
-conv_segments = [1 9 17]; % Choosen boundary segments
+conv_segments = [1 9 18]; % Choosen boundary segments
 edges_conv = [];
 for i = 1:size(er,2)
     if ismember(er(3,i),conv_segments)
