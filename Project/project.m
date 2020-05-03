@@ -59,15 +59,16 @@ for elnr = 1:nelm
     
     [Ke, fe] = flw2te(ex(elnr,:), ey(elnr,:), thickness, temp_D, temp_Q);
     indx = edof(elnr,2:end);              
+    disp(indx)
     K(indx,indx) = K(indx,indx)+Ke; 
     
     indx = edof(elnr,2:end);               
     f(indx) = f(indx) + fe;             
 end
 
-convection_nodes = unique(edges_conv);    % nodes that belong to the convection boundary
-nr_rows = size(convection_nodes, 1);
-init_temp = zeros(nr_rows, 1);
+convection_nodes = unique(edges_conv);  % nodes that belong to the convection boundary
+nr_rows = size(convection_nodes, 1);    % number of nodes on the convection boundary
+init_temp = zeros(nr_rows, 1);          % initial temperature on conv. bound.
 
 bc = [convection_nodes, init_temp];
 
@@ -82,7 +83,7 @@ hold on
 patch(-ex',ey',eT');  % 
 
 title('Temperature distribution [C]')
-colormap(hot);
+colormap(jet);
 colorbar;
 xlabel('x-position [m]')
 ylabel('y-position [m]')
