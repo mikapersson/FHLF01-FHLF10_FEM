@@ -1,6 +1,6 @@
 Calfem/    
 Exercises.pdf
-FEM(fusk)/
+FEM(annan)/
 Kursprogram_2020_FIPi.pdf
 RPReplay_Final1585725067.mp4
 formelsamling_FHLA10_2017_hållf.pdf
@@ -8,4 +8,6 @@ transheat.pdf
 numericalex1.asv
 numericalex2.asv
 Extentor
+FEMprojekt.m
+FEMprojekt(annan).m
 project.asv

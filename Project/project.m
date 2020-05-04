@@ -31,7 +31,7 @@ for ie=1:nelm
     edof(ie,:)=[ie,enod(ie,:)];
 end
 
-[ex,ey]=coordxtr(edof,coord,dof,3);  % x- and y coordinates for each element
+[ex,ey]=coordxtr(edof,coord,dof,3);  % x- and y coordinates for each node
 
 % Check which segments that should have convections
 er = e([1 2 5],:);        % reduced e (only interested of rows 1, 2 and 5)
@@ -45,7 +45,7 @@ for i = 1:size(er,2)
 end
 
 %% SOLVER
-ndof = 2*nnod;       % number degrees of freedom (x & y per node)
+ndof = nnod;       % number degrees of freedom (x & y per node)
 D = eye(2);          % 2D constitutive element matrix
 K = zeros(ndof);     % stiffness matrix
 f = zeros(ndof, 1);  % force vector 
@@ -58,8 +58,7 @@ for elnr = 1:nelm
     temp_D = temp_k * D;
     
     [Ke, fe] = flw2te(ex(elnr,:), ey(elnr,:), thickness, temp_D, temp_Q);
-    indx = edof(elnr,2:end);              
-    disp(indx)
+    indx = edof(elnr,2:end);       
     K(indx,indx) = K(indx,indx)+Ke; 
     
     indx = edof(elnr,2:end);               
