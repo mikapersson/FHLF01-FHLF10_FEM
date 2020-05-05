@@ -92,26 +92,38 @@ for elnr = 1:nelm
     subdomain = t(4,elnr);         % what subdomain the current element belongs to
     temp_k = domain_k(subdomain);  % current k-value
     temp_Q = domain_Q(subdomain);  % current Q-value
-    temp_D = temp_k * D;           % current D-matrix
+    temp_D = temp_k*D;           % current D-matrix
     
     % Get element stiffness matrix and force vector
     [Ke, fe] = flw2te(ex(elnr,:), ey(elnr,:), thickness, temp_D, temp_Q);
     
     if subdomain == 3  % only subdomain 3 has convection
-        
+        % Examine if the current element (elnr) has any boundaries with
+        % convection, if so we shall modify Ke
+        for i = 1:size(edges_conv,2)
+            if ismember([edges_conv(1,i), edges_conv(2,i)],enod(elnr,:))
+                 x1 = edges_conv_coord(1,i);
+                 x2 = edges_conv_coord(2,i);
+                 y1 = edges_conv_coord(3,i);
+                 y2 = edges_conv_coord(4,i);
+                 boundaryLength = sqrt((x2-x1)^2+(y2-y1)^2);
+                 a = thickness*alpha_c*[0, 0, 0; 0, boundaryLength/3, boundaryLength/6; 0, boundaryLength/6, boundaryLength/3];
+                 Ke = Ke+a;
+                 fe = fe+thickness*alpha_c*envTemp*[0; boundaryLength/2; boundaryLength/2];
+            end
+        end
         
     end
-    
     indx = edof(elnr,2:end);       
     K(indx,indx) = K(indx,indx)+Ke;              
-    f(indx) = f(indx) + fe;             
+    f(indx) = f(indx) + fe;     
 end
 
-init_temp = zeros(nr_conv_nodes, 1);        % initial temperature on conv. bound.
+%init_temp = zeros(nr_conv_nodes, 1);        % initial temperature on conv. bound.
 
-bc = [nodes_conv, init_temp];
+%bc = [nodes_conv, init_temp];
 
-T = solveq(K, f, bc);  % nodal temperatures
+T = solveq(K, f);  % nodal temperatures
 
 %% POST PROCESSOR
 eT=extract(edof,T);   % element temperatures
