@@ -25,16 +25,37 @@ for elnr=1:nelm
 end
 
 time_step = 1;  % step in time integration
-max_steps = 10000;
+end_time = 1000;
 
-transient_T = zeros(size(T,1),max_steps);  % node temperatures for each time point
+transient_T = zeros(size(T,1),end_time);  % node temperatures for each time point
 temp_T = init_Temp*ones(size(T));
 transient_T(:,1) = temp_T;  % node temperatures for each time point
 
 % Calculate node temperatures for each time step
-for t=2:max_steps
+for t=2:end_time
     temp_T = (C+time_step*K)\(C*temp_T + time_step * f);
     transient_T(:,t) = temp_T;
+end
+
+
+% Animate transient heat transfer
+for t=1:end_time
+    temp_T = transient_T(:,t);
+    eT=extract(edof,temp_T);   % element temperatures
+
+    % In order to plot both sides of the symmetry cut:
+    patch(ex',ey',eT','EdgeColor','none');   %
+    hold on     
+    patch(-ex',ey',eT','EdgeColor','none');  % 
+
+    title('Temperature distribution [C]')
+    colormap(hot);
+    colorbar;
+    xlabel('x-position [m]')
+    ylabel('y-position [m]')
+    axis equal
+    
+    pause(0.01)
 end
 
 %% Decide which time point you want to examine
