@@ -1,13 +1,14 @@
 % SOLUTION FOR THE PROJECT IN FEM 2020
 % by Mika Persson & Wilhelm Treschow
 
+% Problem a)
 %% PREPROCESSOR 
 clear
 clc
 
 mesh = load('mesh_fine2.mat');  % geometry/mesh of half the IC
 p = mesh.p;  % points/nodes (x:y for each column)
-e = mesh.e;  % edges  (rows 1,2: node # of el. seg., 5: edge label bd. seg.)
+e = mesh.e;  % edges (rows 1,2: node # of el. seg., 5: edge label bd. seg.)
 t = mesh.t;  % triangles (4xnelm, rows 1-3: node numbers, 4: subdomain)
 
 % Constants
@@ -131,7 +132,7 @@ eT=extract(edof,T);   % element temperatures
 % Print maximal temperature:
 % 68.2 C without COVID
 % 55.7 C with COVID
-max(max(eT))
+disp(['Maximal Temperature: ', num2str(max(max(eT)))])
 
 % In order to plot both sides of the symmetry cut:
 patch(ex',ey',eT','EdgeColor','none');   %
