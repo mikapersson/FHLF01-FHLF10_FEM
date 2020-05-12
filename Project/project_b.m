@@ -2,8 +2,8 @@
 % by Mika Persson & Wilhelm Treschow
 
 %Problem b) (run 'problem_a.m' before running this file)
-%% GENERATE C-MATRIX
 
+% Generate C-matrix
 C = zeros(ndof);
 for elnr=1:nelm
     subdomain = t(4,elnr);  % what subdomain the current element belongs to
@@ -25,39 +25,21 @@ for elnr=1:nelm
 end
 
 time_step = 1;  % step in time integration
+max_steps = 10000;
 
-transient_T = zeros(size(T,1),20);  % node temperatures for each time point
+transient_T = zeros(size(T,1),max_steps);  % node temperatures for each time point
 temp_T = init_Temp*ones(size(T));
 transient_T(:,1) = temp_T;  % node temperatures for each time point
 
 % Calculate node temperatures for each time step
-for t=2:20
+for t=2:max_steps
     temp_T = (C+time_step*K)\(C*temp_T + time_step * f);
     transient_T(:,t) = temp_T;
 end
 
-
-
-%%
-for t=1:20
-    temp_T = transient_T(:,t);
-    eT=extract(edof,temp_T);   % element temperatures
-
-    % In order to plot both sides of the symmetry cut:
-    patch(ex',ey',eT','EdgeColor','none');   %
-    hold on     
-    patch(-ex',ey',eT','EdgeColor','none');  % 
-
-    title('Temperature distribution [C]')
-    colormap(hot);
-    colorbar;
-    xlabel('x-position [m]')
-    ylabel('y-position [m]')
-    axis equal
-end
-
-%%
-eT=extract(edof,T);   % element temperatures
+%% Decide which time point you want to examine
+time_point = 1000;
+eT=extract(edof,transient_T(:,time_point));   % element temperatures
 
 % In order to plot both sides of the symmetry cut:
 patch(ex',ey',eT','EdgeColor','none');   %
