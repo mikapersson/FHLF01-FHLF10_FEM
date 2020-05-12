@@ -134,7 +134,7 @@ hold on
 patch(-ex',ey',eT');  % 
 
 title('Temperature distribution [C]')
-colormap(jet);
+colormap(hot);
 colorbar;
 xlabel('x-position [m]')
 ylabel('y-position [m]')
