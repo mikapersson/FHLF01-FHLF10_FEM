@@ -7,17 +7,24 @@
 C = zeros(ndof);
 for elnr=1:nelm
     subdomain = t(4,elnr);         % what subdomain the current element belongs to
-    x;
+    x = null(1);
     switch subdomain
     case 1
-        disp('negative one')
+        x = c_Cu*rho_Cu;
     case 2
-        disp('zero')
+        x = c_Si*rho_Si;
     case 3
-        disp('positive one')
+        x = c_Ag*rho_Ag;
     case 4
-        
+        x = c_Cu*rho_Cu;
     end
+    
+    Ce = plantml(ex(elnr,:), ey(elnr,:), x);
+    index = edof(elnr,2:end);   
+    C(index,index) = C(index,index)+Ce;   
 end
+
+time_step = 1;  % step i time integration
+
 
 
