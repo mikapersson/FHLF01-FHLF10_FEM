@@ -24,21 +24,39 @@ for elnr=1:nelm
     C(index,index) = C(index,index)+Ce;   
 end
 
-time_step = 1;  % step i time integration
+time_step = 1;  % step in time integration
 
 transient_T = zeros(size(T,1),20);  % node temperatures for each time point
 temp_T = init_Temp*ones(size(T));
 transient_T(:,1) = temp_T;  % node temperatures for each time point
 
 % Calculate node temperatures for each time step
-
-temp_f = 
 for t=2:20
-    temp_T = (C+time_step*K)\(C*temp_T + time_step * temp_f);
-    trainsient_T(t,1) = temp_T;
+    temp_T = (C+time_step*K)\(C*temp_T + time_step * f);
+    transient_T(:,t) = temp_T;
 end
 
 
+
+%%
+for t=1:20
+    temp_T = transient_T(:,t);
+    eT=extract(edof,temp_T);   % element temperatures
+
+    % In order to plot both sides of the symmetry cut:
+    patch(ex',ey',eT','EdgeColor','none');   %
+    hold on     
+    patch(-ex',ey',eT','EdgeColor','none');  % 
+
+    title('Temperature distribution [C]')
+    colormap(hot);
+    colorbar;
+    xlabel('x-position [m]')
+    ylabel('y-position [m]')
+    axis equal
+end
+
+%%
 eT=extract(edof,T);   % element temperatures
 
 % In order to plot both sides of the symmetry cut:
