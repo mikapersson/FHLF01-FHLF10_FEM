@@ -4,7 +4,7 @@
 clear
 clc
 
-mesh = load('mesh.mat');  % geometry/mesh of half the IC
+mesh = load('mesh_fine2.mat');  % geometry/mesh of half the IC
 p = mesh.p;  % points/nodes (x:y for each column)
 e = mesh.e;  % edges  (rows 1,2: node # of el. seg., 5: edge label bd. seg.)
 t = mesh.t;  % triangles (4xnelm, rows 1-3: node numbers, 4: subdomain)
@@ -42,6 +42,7 @@ k_Cu = 385;
 
 % Calculate edof matrices
 coord = p';
+coord = coord*10^-3;
 enod=t(1:3,:)';                     % nodes of elements
 nelm=size(enod,1);                  % number of elements
 nnod=size(coord,1);                 % number of nodes
