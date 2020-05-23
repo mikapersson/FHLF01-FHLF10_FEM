@@ -59,13 +59,11 @@ for ei=1:size(er,2)
            new_bc = [dof_S(node_1,1), 0];
            bc = [bc; new_bc];
            found_nodes = [found_nodes, node_1];
-           disp('1')
         end
         if sum(ismember(found_nodes, node_2)) == 0           % we haven't added node2 to bc
            new_bc = [dof_S(node_2,1), 0];
            bc = [bc; new_bc];
            found_nodes = [found_nodes, node_2];
-           disp('2')
         end
         
     elseif edge_label == fixed_edge_label          % if we are at the bottom
@@ -73,20 +71,17 @@ for ei=1:size(er,2)
            new_bc = [dof_S(node_1,1), 0; dof_S(node_1,2), 0];
            bc = [bc; new_bc];
            found_nodes = [found_nodes, node_1];
-           disp('3')
         end
         if sum(ismember(found_nodes, node_2)) == 0          % we haven't added node2 to bc
            new_bc = [dof_S(node_2,1), 0; dof_S(node_2,2), 0];
            bc = [bc; new_bc];
            found_nodes = [found_nodes, node_2];
-           disp('4')
         end
     end
 end
 
-u = solveq(Ks,fs,bc);
-ed = extract(edof_S,u);
-
+u = solveq(Ks,fs,bc);    %  
+ed = extract(edof_S,u);  % displacenemt for every degree of freedom
 
 %% Plot displacement
 % Calculate displaced coordinates 
@@ -109,10 +104,10 @@ title('Displacement field [Magnitude enhancement 100]')
 
 %% Von mises stress-field
 
-stress = zeros(nelm,4);
+% stress = zeros(nelm,4);
 vonmises_field = zeros(nelm,1);
 for j = 1:nelm
-    subdomain = t(4,i);
+    subdomain = t(4,j);
     
     E = E_values(subdomain);
     v = v_values(subdomain);
@@ -157,7 +152,7 @@ end
 
 %% Plot stress field
 
-Seff_el = vonmises_field;
+Seff_el = vonmises_field;  % effective stress
 
 Seff_nod = zeros(nnod,1);
 for i=1:size(coord,1) 
@@ -166,9 +161,9 @@ for i=1:size(coord,1)
 end
 
 Seff = extract(edof,Seff_nod);
-patch(ex',ey',Seff','EdgeColor','none');   %
+patch(exd',eyd',Seff','EdgeColor','none');   %
 hold on     
-patch(-ex',ey',Seff','EdgeColor','none');  % 
+patch(-exd',eyd',Seff','EdgeColor','none');  % 
 
 title('Stress field [Pa]')
 colormap(jet);
