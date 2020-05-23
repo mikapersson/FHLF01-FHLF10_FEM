@@ -11,7 +11,7 @@ alfa_values = [alpha_Cu alpha_Si alpha_Ag alpha_Cu];
 ptype = 2;            % because of plain strain problem
 Ks = zeros(ndof);     % elasticity stiffness matrix
 fs = zeros(ndof, 1);  % elasticity force vector
-Ep = [ptype ep];      % from CALFEM manual p.87
+Ep = [ptype thickness];      % from CALFEM manual p.87
 
 element_DeltaT = zeros(nelm,1);  
 
@@ -51,29 +51,35 @@ found_nodes = [];  % keeps track of visited nodes
 
 % Construct boundary value vector (bc)  (not so pretty..)
 for ei=1:size(er,2)
-   [node_1, node_2, edge_label] = er(:,ei); 
+   node_1 = er(1,ei); 
+   node_2 = er(2,ei); 
+   edge_label = er(3,ei); 
     if ismember(symmetry_edge_labels, edge_label)  % if the edge is on the symmetry axis
-        if ismember(found_nodes, node_1)           % we haven't added node1 to bc
+        if sum(ismember(found_nodes, node_1)) == 0           % we haven't added node1 to bc
            new_bc = [dof_S(node_1,1), 0];
            bc = [bc; new_bc];
            found_nodes = [found_nodes, node_1];
+           disp('1')
         end
-        if ismember(found_nodes, node_2)           % we haven't added node2 to bc
+        if sum(ismember(found_nodes, node_2)) == 0           % we haven't added node2 to bc
            new_bc = [dof_S(node_2,1), 0];
            bc = [bc; new_bc];
            found_nodes = [found_nodes, node_2];
+           disp('2')
         end
         
     elseif edge_label == fixed_edge_label          % if we are at the bottom
-        if ismember(found_nodes, node_1)           % we haven't added node1 to bc
-           new_bc = [dof_S(node_1,1), 0; dof_s(node_1,2), 0];
+        if sum(ismember(found_nodes, node_1)) == 0           % we haven't added node1 to bc
+           new_bc = [dof_S(node_1,1), 0; dof_S(node_1,2), 0];
            bc = [bc; new_bc];
            found_nodes = [found_nodes, node_1];
+           disp('3')
         end
-        if ismember(found_nodes, node_2)           % we haven't added node2 to bc
+        if sum(ismember(found_nodes, node_2)) == 0          % we haven't added node2 to bc
            new_bc = [dof_S(node_2,1), 0; dof_S(node_2,2), 0];
            bc = [bc; new_bc];
            found_nodes = [found_nodes, node_2];
+           disp('4')
         end
     end
 end

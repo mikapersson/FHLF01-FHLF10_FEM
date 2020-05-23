@@ -32,15 +32,15 @@ temp_T = init_Temp*ones(size(T));
 transient_T(:,1) = temp_T;  % node temperatures for each time point
 
 % Calculate node temperatures for each time step
-for t=2:end_time
+for time=2:end_time
     temp_T = (C+time_step*K)\(C*temp_T + time_step * f);
-    transient_T(:,t) = temp_T;
+    transient_T(:,time) = temp_T;
 end
 
 
 % Animate transient heat transfer
-for t=1:end_time
-    temp_T = transient_T(:,t);
+for time=1:end_time
+    temp_T = transient_T(:,time);
     eT=extract(edof,temp_T);   % element temperatures
 
     % In order to plot both sides of the symmetry cut:
