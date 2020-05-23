@@ -50,14 +50,15 @@ dof=(1:nnod)';                      % dof number is node number
 dof_S=[(1:nnod)',(nnod+1:2*nnod)']; % give each dof a number
 
 for ie=1:nelm
-    edof_S(ie,:)=[ie dof_S(enod(ie,1),:), dof_S(enod(ie,2),:),dof_S(enod(ie,3),:)];
-    edof(ie,:)=[ie,enod(ie,:)];
+    edof_S(ie,:)=[ie dof_S(enod(ie,1),:), dof_S(enod(ie,2),:),dof_S(enod(ie,3),:)];  % edof matrix for elasticity problem
+    edof(ie,:)=[ie,enod(ie,:)];  
 end
 
 [ex,ey]=coordxtr(edof,coord,dof,3);  % x- and y coordinates for each node
 
-% Check which segments that should have convections
 er = e([1 2 5],:);        % reduced e (only interested of rows 1, 2 and 5)
+
+% Check which segments that should have convections
 conv_segments = [1 9 18]; % choosen boundary segments
 edges_conv = [];          % edges with convection
 
