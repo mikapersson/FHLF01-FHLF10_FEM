@@ -54,7 +54,7 @@ for ei=1:size(er,2)
    node_1 = er(1,ei); 
    node_2 = er(2,ei); 
    edge_label = er(3,ei); 
-    if ismember(symmetry_edge_labels, edge_label)  % if the edge is on the symmetry axis
+    if sum(ismember(symmetry_edge_labels, edge_label)) ~= 0  % if the edge is on the symmetry axis
         if sum(ismember(found_nodes, node_1)) == 0           % we haven't added node1 to bc
            new_bc = [dof_S(node_1,1), 0];
            bc = [bc; new_bc];
