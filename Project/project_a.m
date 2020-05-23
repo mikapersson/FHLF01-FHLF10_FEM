@@ -74,7 +74,7 @@ nr_conv_nodes = size(nodes_conv, 1);         % number of nodes on the convection
 edges_conv_coord = zeros(nr_conv_nodes, 4);  % (x,y)-coordinate for the two nodes
                                              % for every edge represented
                                              % as [x1, x2, y1, y2]
-% Fill nodes_conv_coord-matrix
+% Fill edges_conv_coord-matrix
 for edge_nr = 1:nr_conv_edges
     edges_conv_coord(1,edge_nr) = coord(edges_conv(1,edge_nr),1);  %x1
     edges_conv_coord(2,edge_nr) = coord(edges_conv(2,edge_nr),1);  %x2
@@ -83,7 +83,7 @@ for edge_nr = 1:nr_conv_edges
 end
 
 %% SOLVER
-ndof = nnod;       % number degrees of freedom (x & y per node)
+ndof = nnod;         % number degrees of freedom (x & y per node)
 D = eye(2);          % 2D constitutive element matrix
 K = zeros(ndof);     % stiffness matrix
 f = zeros(ndof, 1);  % force vector 
@@ -94,7 +94,7 @@ for elnr = 1:nelm
     subdomain = t(4,elnr);         % what subdomain the current element belongs to
     temp_k = domain_k(subdomain);  % current k-value
     temp_Q = domain_Q(subdomain);  % current Q-value
-    temp_D = temp_k*D;           % current D-matrix
+    temp_D = temp_k*D;             % current D-matrix
     
     % Get element stiffness matrix and force vector
     [Ke, fe] = flw2te(ex(elnr,:), ey(elnr,:), thickness, temp_D, temp_Q);
@@ -120,10 +120,6 @@ for elnr = 1:nelm
     K(index,index) = K(index,index)+Ke;              
     f(index) = f(index) + fe;     
 end
-
-%init_temp = zeros(nr_conv_nodes, 1);        % initial temperature on conv. bound.
-
-%bc = [nodes_conv, init_temp];
 
 T = solveq(K, f);  % nodal temperatures
 
