@@ -11,7 +11,7 @@ alfa_values = [alpha_Cu alpha_Si alpha_Ag alpha_Cu];
 ptype = 2;            % because of plain strain problem
 Ks = zeros(ndof);     % elasticity stiffness matrix
 fs = zeros(ndof, 1);  % elasticity force vector
-Ep = [ptype ep];      % from CALFEM manual
+Ep = [ptype ep];      % from CALFEM manual p.87
 
 element_DeltaT = zeros(nelm,1);  
 
@@ -32,11 +32,11 @@ for i =1:nelm
     v = v_values(subdomain);
     alfa = alfa_values(subdomain);
     
-    Ds = E/((1+v)*(1-2*v))*[1-v v 0; v 1-v 0; 0 0 0.5*(1-2*v)];
+    Ds = E/((1+v)*(1-2*v))*[1-v v 0; v 1-v 0; 0 0 0.5*(1-2*v)];  % see p.255
     Ds0 = Ds*(1+v)*alfa*DeltaT*[1; 1; 0];
     
-    Kse=plante(ex(i,:),ey(i,:),Ep,Ds);
-    fse=plantf(ex(i,:),ey(i,:),Ep,Ds0');
+    Kse=plante(ex(i,:),ey(i,:),Ep,Ds);    % element Ks
+    fse=plantf(ex(i,:),ey(i,:),Ep,Ds0');  % element fs
     
     indx = edof_S(i,2:end);
     Ks(indx,indx) = Ks(indx,indx)+Kse;
@@ -44,29 +44,39 @@ for i =1:nelm
     
 end
 
+symmetry_edge_labels = [10,11,12,13];
+fixed_edge_label = 7;
+bc = [];
+found_nodes = [];  % keeps track of visited nodes
 
-% Skit i detta
-bc = [dof_S(17,1), 0; dof_S(17,2), 0; 
-    dof_S(18,1), 0; dof_S(18,2), 0;
-    dof_S(147,1), 0; dof_S(147,2), 0;
-    dof_S(1,1), 0; 
-    dof_S(165,1), 0;
-    dof_S(54,1), 0; 
-    dof_S(164,1), 0;
-    dof_S(53,1), 0; 
-    dof_S(163,1), 0;
-    dof_S(52,1), 0; 
-    dof_S(162,1), 0;
-    dof_S(14,1), 0; 
-    dof_S(161,1), 0;
-    dof_S(20,1), 0; 
-    dof_S(160,1), 0; 
-    dof_S(19,1), 0; 
-    dof_S(159,1), 0;
-    dof_S(51,1), 0; 
-    dof_S(158,1), 0;
-    dof_S(5,1), 0; 
-    ];
+% Construct boundary value vector (bc)  (not so pretty..)
+for ei=1:size(er,2)
+   [node_1, node_2, edge_label] = er(:,ei); 
+    if ismember(symmetry_edge_labels, edge_label)  % if the edge is on the symmetry axis
+        if ismember(found_nodes, node_1)           % we haven't added node1 to bc
+           new_bc = [dof_S(node_1,1), 0];
+           bc = [bc; new_bc];
+           found_nodes = [found_nodes, node_1];
+        end
+        if ismember(found_nodes, node_2)           % we haven't added node2 to bc
+           new_bc = [dof_S(node_2,1), 0];
+           bc = [bc; new_bc];
+           found_nodes = [found_nodes, node_2];
+        end
+        
+    elseif edge_label == fixed_edge_label          % if we are at the bottom
+        if ismember(found_nodes, node_1)           % we haven't added node1 to bc
+           new_bc = [dof_S(node_1,1), 0; dof_s(node_1,2), 0];
+           bc = [bc; new_bc];
+           found_nodes = [found_nodes, node_1];
+        end
+        if ismember(found_nodes, node_2)           % we haven't added node2 to bc
+           new_bc = [dof_S(node_2,1), 0; dof_S(node_2,2), 0];
+           bc = [bc; new_bc];
+           found_nodes = [found_nodes, node_2];
+        end
+    end
+end
 
 u = solveq(Ks,fs,bc);
 ed = extract(edof_S,u);
