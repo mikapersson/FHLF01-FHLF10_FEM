@@ -1,35 +1,34 @@
 % SOLUTION FOR THE PROJECT IN FEM 2020
 % by Mika Persson & Wilhelm Treschow
 
-% Problem c)
-
+% Problem c) (run the sections above before running this section)
+%%
 ndof = 2*nnod;                        % number of degrees of freedom
-E_values = 10^9 * [E_Ag E_Cu E_Si E_Cu];
-v_values = [nu_Ag nu_Cu nu_Si nu_Cu];
-alfa_values = [alpha_Ag alpha_Cu alpha_Si alpha_Cu];
-  
+E_values = 10^9 * [E_Cu E_Si E_Ag E_Cu];
+v_values = [nu_Cu nu_Si nu_Ag nu_Cu];
+alfa_values = [alpha_Cu alpha_Si alpha_Ag alpha_Cu];
 
-ptype = 2;                                              % Because of plain strain problem
-Ks = zeros(ndof);
-fs = zeros(ndof, 1);
-Ep = [ptype ep];
+ptype = 2;            % because of plain strain problem
+Ks = zeros(ndof);     % elasticity stiffness matrix
+fs = zeros(ndof, 1);  % elasticity force vector
+Ep = [ptype ep];      % from CALFEM manual
 
-element_DeltaT = zeros(nelm,1);
+element_DeltaT = zeros(nelm,1);  
 
-
+% Create Ks and fs (and element_DeltaT)
 for i =1:nelm
    
-    
-    DeltaT1 = T(t(1,i))-init_Temp;                            % The temperature difference in each node
+    DeltaT1 = T(t(1,i))-init_Temp;             % the temperature difference in each node
     DeltaT2 = T(t(2,i))-init_Temp;
     DeltaT3 = T(t(3,i))-init_Temp;
-    DeltaT = (DeltaT1 + DeltaT2 + DeltaT3)/3;                  % This is the mean temperatuer difference for an element
+    DeltaT = (DeltaT1 + DeltaT2 + DeltaT3)/3;  % this is the mean temperatuer difference for an element
 
     element_DeltaT(i,:) = DeltaT;
     
-    subdomain = t(4,i);
+    subdomain = t(4,i);  
     
-    E = E_values(subdomain);
+    % get constants for current element
+    E = E_values(subdomain);  
     v = v_values(subdomain);
     alfa = alfa_values(subdomain);
     

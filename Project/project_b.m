@@ -1,7 +1,7 @@
 % SOLUTION FOR THE PROJECT IN FEM 2020
 % by Mika Persson & Wilhelm Treschow
 
-%Problem b) (run 'problem_a.m' before running this file)
+%Problem b) (run the sections above before running this section)
 
 % Generate C-matrix
 C = zeros(ndof);
