@@ -373,7 +373,7 @@ end
 Seff = extract(edof,Seff_nod);  % element stresses
 
 % Get peak stress
-disp(['Maximal Temperature: ', num2str(max(max(Seff)))])
+disp(['Maximal Stress: ', num2str(max(max(Seff)))])
 
 % Plot stress field of deformed IC
 patch(exd',eyd',Seff','EdgeColor','none');   
