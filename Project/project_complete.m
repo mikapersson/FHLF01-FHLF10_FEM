@@ -141,7 +141,8 @@ patch(ex',ey',eT','EdgeColor','none');
 hold on     
 patch(-ex',ey',eT','EdgeColor','none');  
 
-title('Temperature distribution [C]')
+title('Temperature distribution with reduced video quality [C]')
+grid on
 colormap(hot);
 colorbar;
 xlabel('x-position [m]')
@@ -172,7 +173,7 @@ for elnr=1:nelm
 end
 
 time_step = 1;  % step in time integration
-end_time = 20*60;
+end_time = 40*60;
 
 transient_T = zeros(size(T,1),end_time);  % preallocate node temperatures for each time point
 temp_T = init_Temp*ones(size(T));         % current node temperatures
@@ -184,7 +185,7 @@ for time=2:end_time
     transient_T(:,time) = temp_T;
 end
 
-% Animate transient heat transfer
+%% Animate transient heat transfer
 for time=1:end_time
     temp_T = transient_T(:,time);
     eT=extract(edof,temp_T);   % element temperatures
@@ -205,7 +206,7 @@ for time=1:end_time
 end
 
 %% Decide which time point you want to examine
-time_point = 20*60;
+time_point = 40*60;
 eT=extract(edof,transient_T(:,time_point));   % element temperatures
 
 % Plot temperature at time 'time_point'
@@ -213,7 +214,7 @@ patch(ex',ey',eT','EdgeColor','none');
 hold on     
 patch(-ex',ey',eT','EdgeColor','none');   
 
-title('Temperature distribution [C]')
+title('Temperature distribution at initial time point [C]')
 colormap(hot);
 colorbar;
 xlabel('x-position [m]')
@@ -320,6 +321,9 @@ patch(exd',eyd',[0 0 0],'FaceAlpha',0.3)
 hold on
 patch(-exd',eyd',[0 0 0],'FaceAlpha',0.3)
 
+xlabel('x-position [m]')
+ylabel('y-position [m]')
+
 axis equal
 
 title('Displacement field [Magnitude enhancement 100]')
@@ -367,6 +371,9 @@ for i=1:size(coord,1)
 end
 
 Seff = extract(edof,Seff_nod);  % element stresses
+
+% Get peak stress
+disp(['Maximal Temperature: ', num2str(max(max(Seff)))])
 
 % Plot stress field of deformed IC
 patch(exd',eyd',Seff','EdgeColor','none');   
