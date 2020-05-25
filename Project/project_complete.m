@@ -326,7 +326,7 @@ ylabel('y-position [m]')
 
 axis equal
 
-title('Displacement field [Magnitude enhancement 100]')
+title('Displacement field with reduced video quality [Magnitude enhancement 100]')
 
 %% Von mises stress-field (similar to the computations as above)
 
@@ -373,14 +373,30 @@ end
 Seff = extract(edof,Seff_nod);  % element stresses
 
 % Get peak stress
-disp(['Maximal Stress: ', num2str(max(max(Seff)))])
+peak_stress = max(Seff_el);
+disp(['Peak Stress: ', num2str(peak_stress)])
+% 0.146 GPa without reduction
+% 
+
+% Get element with peak stress
+el_nr = find(Seff_el == peak_stress);
+disp(['at element: ', num2str(el_nr)])
+% 43
+
+% Get coordinates of peak stress
+point_nr = t(1,el_nr);
+x_coord = p(1,point_nr);
+y_coord = p(2,point_nr);
+disp(['at coordinates: ', num2str(x_coord), ':', num2str(y_coord)])
+% x=3.5, y=0
+
 
 % Plot stress field of deformed IC
 patch(exd',eyd',Seff','EdgeColor','none');   
 hold on     
 patch(-exd',eyd',Seff','EdgeColor','none');  
 
-title('Stress field [Pa]')
+title('Stress field with reduced video quality [Pa]')
 colormap(jet);
 colorbar;
 xlabel('x-position [m]')
